@@ -3,8 +3,6 @@ require 'net/http'
 require 'net/https'
 require 'json'
 require 'erb'
-require 'rack/request'
-require 'rack/response'
 
 require 'config'
 
@@ -63,13 +61,4 @@ class Simple
     page = template.result(binding)
     [200, {"Content-Type" => "text/html"}, [page]]
   end
-end
-
-
-if $0 == __FILE__
-  require 'rack'
-  require 'rack/showexceptions'
-  Rack::Handler.default.run \
-    Rack::ShowExceptions.new(Rack::Lint.new(Simple.new)),
-    Port: 9292
 end

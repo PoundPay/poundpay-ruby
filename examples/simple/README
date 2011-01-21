@@ -1,0 +1,8 @@
+Simple example of PoundPay's REST API.
+
+The example creates a Rack application that servers one page.  In that one
+page, the user is presented with secure iframe served by PoundPay to pay
+david@example.com $200 for a pair of Beat by Dr. Dre on our simple marketplace.
+
+To run the example, run the command `rackup` and visit http://localhost:9292
+
