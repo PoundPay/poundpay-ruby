@@ -1,0 +1,15 @@
+<html>
+  <title>Simple Marketplace</title>
+  <script src="<%= www_poundpay_url %>/js/pmp/pound_pmp.js"></script>
+  <body>
+    <h1><%= payment_request['description'] %></h1>
+    <div id="pound-root"></div>
+    <script type="text/javascript">
+      PoundPayment.init({
+        // success: paymentSuccessCallback,
+        prid: "<%= payment_request['sid'] %>",
+        server: "<%= www_poundpay_url %>"
+      });
+    </script>
+  </body>
+</html>
