@@ -32,11 +32,11 @@ class PoundPay
 end
 
 
-class Simple
+class SimpleApplication
   attr_reader :poundpay_client
 
   def initialize
-    config = Simple::CONFIG[:poundpay]
+    config = SimpleApplication::CONFIG[:poundpay]
     @poundpay_client = PoundPay.new(config[:api_url], config[:version], config[:sid], config[:token])
   end
 
@@ -56,7 +56,7 @@ class Simple
     puts payment_request
 
     # Render and return page
-    www_poundpay_url = Simple::CONFIG[:poundpay][:www_url]
+    www_poundpay_url = SimpleApplication::CONFIG[:poundpay][:www_url]
     template = ERB.new(open("index.html.erb").read)
     page = template.result(binding)
     [200, {"Content-Type" => "text/html"}, [page]]
