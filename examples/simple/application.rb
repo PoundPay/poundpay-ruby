@@ -8,7 +8,8 @@ require 'rack/response'
 
 require 'config'
 
-class Poundpay
+
+class PoundPay
   attr_reader :api_url, :version, :sid, :token
 
   def initialize(api_url, version, sid, token)
@@ -38,12 +39,13 @@ class Simple
 
   def initialize
     config = Simple::CONFIG[:poundpay]
-    @poundpay_client = Poundpay.new(config[:api_url], config[:version], config[:sid], config[:token])
-    Signal.trap(2) {}
+    @poundpay_client = PoundPay.new(config[:api_url], config[:version], config[:sid], config[:token])
   end
 
   def call(env)
-    puts env
+    unless env['REQUEST_PATH'] == '/' and env['REQUEST_METHOD'] == 'GET'
+      return [404, {"Content-Type" => "text/plain"}, ["Page Not Found"]]
+    end
     # Create payment request
     params = {
       'amount'                  => 20000,  # In USD cents
