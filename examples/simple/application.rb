@@ -56,7 +56,7 @@ class Simple
     puts payment_request
 
     # Render and return page
-    www_poundpay_url= Simple::CONFIG[:poundpay][:www_url]
+    www_poundpay_url = Simple::CONFIG[:poundpay][:www_url]
     template = ERB.new(open("index.html.erb").read)
     page = template.result(binding)
     [200, {"Content-Type" => "text/html"}, [page]]
