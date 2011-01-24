@@ -22,7 +22,7 @@ class PoundPay
     puts request_url, params
     uri = URI.parse request_url
     http = Net::HTTP.new uri.host, uri.port
-    http.use_ssl = uri.scheme == "https"
+    http.use_ssl = true
     req = Net::HTTP::Post.new uri.request_uri
     req.set_form_data params
     req.basic_auth @sid, @token

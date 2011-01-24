@@ -1,11 +1,11 @@
-class Simple
+class SimpleApplication
   CONFIG = {
     poundpay: {
-      api_url: "http://api-sandbox.poundpay.com",
-      www_url: "http://www-sandbox.poundpay.com",
+      api_url: "https://api-sandbox.poundpay.com",
+      www_url: "https://www-sandbox.poundpay.com",
       version: "silver",
-      sid: "",
-      token: "",
+      sid: "DVxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      token: "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
     }
   }
 end
