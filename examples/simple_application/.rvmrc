@@ -1,0 +1,3 @@
+echo 'Switching rvm gemset ...'
+rvm use --create --install 1.9.1@poundpay-simple_application >& /dev/null
+rvm gemset import >& /dev/null
