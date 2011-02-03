@@ -6,7 +6,7 @@
     <h2><%= payment_request['description'] %></h2>
     <div id="pound-root"></div>
     <script type="text/javascript">
-      PoundPayment.init({
+      PoundPay.init({
         // success: paymentSuccessCallback,
         payment_request_sid: "<%= payment_request['sid'] %>",
         server: "<%= www_poundpay_url %>"
