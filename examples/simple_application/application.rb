@@ -48,12 +48,13 @@ class SimpleApplication
     params = {
       'amount'                  => 20000,  # In USD cents
       'payer_fee_amount'        => 0,
+      'payer_email_address'     => 'goliath@example.com',
       'recipient_fee_amount'    => 500,
       'recipient_email_address' => 'david@example.com',
       'description'             => 'Beats by Dr. Dre',
     }
-    payment_request = @poundpay_client.post 'payment_requests', params
-    puts payment_request
+    payment = @poundpay_client.post 'payments', params
+    puts payment
 
     # Render and return page
     www_poundpay_url = SimpleApplication::CONFIG[:poundpay][:www_url]

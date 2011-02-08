@@ -1,15 +1,17 @@
 <html>
   <title>Simple Marketplace</title>
-  <script src="<%= www_poundpay_url %>/js/pmp/pound_pmp.js"></script>
+  <script src="<%= www_poundpay_url %>/js/poundpay.js"></script>
   <body>
     <h1>Simple Marketplace</h1>
-    <h2><%= payment_request['description'] %></h2>
+    <h2><%= payment['description'] %></h2>
     <div id="pound-root"></div>
     <script type="text/javascript">
       PoundPay.init({
-        // success: paymentSuccessCallback,
-        payment_request_sid: "<%= payment_request['sid'] %>",
-        server: "<%= www_poundpay_url %>"
+        // success: successCallback,  // Optional js callback
+        payment_sid: "<%= payment['sid'] %>",
+        server: "<%= www_poundpay_url %>",
+        cardholder_name: "David Stonethrower",  // Optional
+        phone_number: "6505551234"  // Optional
       });
     </script>
   </body>
