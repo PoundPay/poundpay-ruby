@@ -6,10 +6,13 @@ module PoundPay
   require 'cgi'
   require 'json'
 
+
   API_URL = 'https://api.poundpay.com'
   VERSION = 'silver'
 
+
   class PoundPayClient
+    attr_reader :sid
       
     #initialize a poundpay account object
     #
@@ -29,7 +32,7 @@ module PoundPay
     #method, the HTTP method to use, defaults to POST
     #vars, for POST or PUT, a dict of data to send
     #
-    #@return PoundPay response JSON
+    #@return PoundPay response
     #@raises [ArgumentError] Invalid path parameter
     #@raises [NotImplementedError] Method given is not implemented
     def request(path, method=nil, vars={})
@@ -111,6 +114,7 @@ module PoundPay
 end
 
 
+# Patch HTTPResponse to add .json
 class Net::HTTPResponse
   def json
     if not @json
