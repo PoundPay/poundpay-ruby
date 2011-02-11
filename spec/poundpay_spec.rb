@@ -30,5 +30,15 @@ describe Poundpay do
       )
       Poundpay::Resource.site.to_s.should == "https://api-sandbox.poundpay.com/gold/"
     end
+
+    it "should allow api_url to have a trailing backslash" do
+      Poundpay.configure(
+        "DV0383d447360511e0bbac00264a09ff3c",
+        "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a",
+        api_url="https://api-sandbox.poundpay.com/",
+        version="gold",
+      )
+      Poundpay::Resource.site.to_s.should == "https://api-sandbox.poundpay.com/gold/"
+    end
   end
 end

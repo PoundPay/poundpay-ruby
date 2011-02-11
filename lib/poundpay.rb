@@ -10,6 +10,7 @@ module Poundpay
         raise ArgumentError.new "developer_sid should start with 'DV'.  Make sure " \
           "you're using the right developer_sid"
       end
+      api_url.sub! /(\/)$/, ""  # Remove trailing backslash
       Resource.site = "#{api_url}/#{version}/"
       Resource.user = developer_sid
       Resource.password = auth_token
