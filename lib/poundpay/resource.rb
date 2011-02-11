@@ -11,19 +11,20 @@ module Poundpay
 
       # Modified default to not use an extension
       def element_path(id, prefix_options = {}, query_options = nil)
-        prefix_options, query_options = split_options(prefix_options) if query_options.nil?
-        "#{prefix(prefix_options)}#{collection_name}/#{URI.escape id.to_s}#{query_string(query_options)}"
+        path = super(id, prefix_options, query_options)
+        remove_extension(path)
       end
 
       # Modified default to not use an extension
       def new_element_path(prefix_options = {})
-        "#{prefix(prefix_options)}#{collection_name}/new"
+        path = super(prefix_options)
+        remove_extension(path)
       end
 
       # Modified default to not use an extension
       def collection_path(prefix_options = {}, query_options = nil)
-        prefix_options, query_options = split_options(prefix_options) if query_options.nil?
-        "#{prefix(prefix_options)}#{collection_name}#{query_string(query_options)}"
+        path = super(prefix_options, query_options)
+        remove_extension(path)
       end
 
       # Handle paginated collections
@@ -32,6 +33,11 @@ module Poundpay
         collection = collection[collection_name]
         super(collection, prefix_options)
       end
+
+      protected
+        def remove_extension(path)
+          path.sub /(\.#{format.extension})$/, ""
+        end
     end
 
     # Poundpay accepts urlencoded form parameters
