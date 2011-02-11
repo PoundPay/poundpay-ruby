@@ -1,4 +1,5 @@
 require 'poundpay/resource'
+require 'poundpay/elements'
 
 module Poundpay
   API_URL = "https://api.poundpay.com"
@@ -14,19 +15,6 @@ module Poundpay
       Resource.site = "#{api_url}/#{version}/"
       Resource.user = developer_sid
       Resource.password = auth_token
-    end
-  end
-
-  class Developer < Resource
-    def self.me
-      find(self.user)
-    end
-  end
-
-  class Payment < Resource
-    def release
-      self.status = 'RELEASED'
-      self.save
     end
   end
 end
