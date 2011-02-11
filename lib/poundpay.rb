@@ -17,10 +17,8 @@ module Poundpay
   end
 
   class Developer < Resource
-    class << self
-      def me
-        find(self.user)
-      end
+    def self.me
+      find(self.user)
     end
   end
 
