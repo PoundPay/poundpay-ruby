@@ -7,7 +7,7 @@ module Poundpay
   class << self
     def configure(developer_sid, auth_token, api_url=API_URL, version=API_VERSION)
       unless developer_sid.start_with? "DV"
-        raise ArgumentError.new "developer_sid should start with DV.  Make sure " \
+        raise ArgumentError.new "developer_sid should start with 'DV'.  Make sure " \
           "you're using the right developer_sid"
       end
       Resource.site = "#{api_url}/#{version}/"

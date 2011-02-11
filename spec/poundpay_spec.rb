@@ -2,7 +2,7 @@ require 'poundpay'
 
 describe Poundpay do
   describe "#configure" do
-    it "should require developer_sid to start with DV" do
+    it "should require developer_sid to start with 'DV'" do
       expect {
         # Pass developer_sid and auth_token in wrong order
         Poundpay.configure(
