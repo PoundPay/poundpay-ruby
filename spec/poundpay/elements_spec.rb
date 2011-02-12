@@ -11,8 +11,7 @@ describe Developer do
   before (:all) do
     Poundpay.configure(
       "DV0383d447360511e0bbac00264a09ff3c",
-      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a",
-    )
+      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a")
   end
 
   describe "#me" do
@@ -29,8 +28,7 @@ describe Payment do
   before (:all) do
     Poundpay.configure(
       "DV0383d447360511e0bbac00264a09ff3c",
-      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a",
-    )
+      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a")
   end
 
   describe "#release" do
