@@ -9,7 +9,10 @@ Install
 
 Configure
 ---------
-    Poundpay.configure("developer_sid", "auth_token")
+    Poundpay.configure(
+      "developer_sid",
+      "auth_token",
+      api_url = "https://api-sandbox.poundpay.com")
 
 
 Creating a payment
