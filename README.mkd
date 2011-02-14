@@ -1,0 +1,31 @@
+Poundpay
+========
+
+
+Install
+-------
+    gem install poundpay
+
+
+Configure
+---------
+    Poundpay.configure("developer_sid", "auth_token")
+
+
+Creating a payment
+------------------
+    require 'poundpay'
+  
+    payment = Poundpay::Payment.create(
+      :amount                     => 20000,
+      :payer_fee_amount           => 0,
+      :payer_email_address        => "goliath@example.com",
+      :recipient_fee_amount       => 500,
+      :recipient_email_address    => "david@example.com",
+      :description                => "Beats by Dr. Dre",
+    )
+
+Releasing a payment
+------------------
+    payment.release
+    payment.save!
