@@ -8,7 +8,7 @@ module Poundpay
     signature == calculate_signature(@callback_url, params)
   end
 
-  # protected
+  protected
     def self.calculate_signature(url, params)
       data = url
       @token = Resource.password
