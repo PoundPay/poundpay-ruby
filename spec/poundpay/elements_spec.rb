@@ -37,12 +37,12 @@ describe Payment do
       expect {@created_payment.release}.to raise_error(PaymentReleaseException)
     end
 
-    it "should release a ESCROWED payment" do
+    it "should release an ESCROWED payment" do
       @escrowed_payment = Payment.new escrowed_payment_attributes
       @escrowed_payment.should_receive(:save).and_return(Payment.new released_payment_attributes)
 
       @escrowed_payment.release
-      @escrowed_payment.status.should == 'ESCROWED'
+      @escrowed_payment.status.should == 'RELEASED'
     end
   end
 end
