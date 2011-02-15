@@ -15,7 +15,9 @@ module Poundpay
       unless status == 'ESCROWED'
         raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be released"
       end
-      status = 'RELEASED'
+      # Tried setting status with status=, but save still had status == 'ESCROWED'.
+      # Setting the status through the attributes, however, does work.
+      attributes['status'] = 'RELEASED'
       save
     end
   end
