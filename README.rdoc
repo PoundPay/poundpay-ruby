@@ -1,0 +1,72 @@
+== Poundpay
+
+Poundpay is payments platform for marketplaces 
+
+
+== Adding Poundpay to Rails
+
+1. Add the following to your Gemfile
+
+    gem 'poundpay', '~> 0.1.2'
+
+2. At the command prompt, install the gem with bundler
+
+    bundle install
+
+3. Add your Poundpay configuration to config/initializers/poundpay.rb
+
+    Poundpay.configure(
+      "DV0383d447360511e0bbac00264a09ff3c",  # developer_sid
+      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a",  # auth_token
+      api_url = "https://api-sandbox.poundpay.com"  # Note: Leave out for production
+    )
+
+4. Protect your callback controller
+
+    before_filter :verify_poundpay_callback
+
+
+== Creating a payment
+Adding the payer_sid (from a previous payment), will cause the payer to see
+the repeat flow when they are not prompted to reenter their credit card information
+
+    @payment = Poundpay::Payment.create(
+      :amount                  => 20000,
+      :payer_fee_amount        => 0,
+      :payer_email_address     => "fred@example.com",
+      :payer_sid               => "97f51e5c38e211e08625e7af17bae06a",  # Optional
+      :recipient_fee_amount    => 500,
+      :recipient_email_address => "david@example.com",
+      :description             => "Beats by Dr. Dre",
+    )
+
+
+== Serving IFRAME
+
+    <script src="https://www.poundpay.com/js/poundpay.js"></script>
+
+    <div id="pound-root"></div>
+
+    <script>
+      function handlePaymentSuccess() {
+        // do something
+      }
+
+      function handlePaymentError() {
+        // handle error
+      }
+
+      PoundPay.init({
+        payment_sid: <%= @payment.sid %>,
+        success: handlePaymentSuccess,
+        error: handlePaymentError,
+        cardholder_name: 'Fred Nietzsche', // note: optional
+        phone_number: '4085551234', // note: optional
+        server: 'https://www-sandbox.poundpay.com' // note: exclude this property when in production
+      });
+    </script>
+
+
+== Releasing a payment
+
+    payment.release
