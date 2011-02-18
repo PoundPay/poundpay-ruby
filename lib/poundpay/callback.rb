@@ -26,10 +26,10 @@ module ActionController
     protected
       def verify_poundpay_callback
         signature = request.headers['HTTP_X_POUNDPAY_SIGNATURE']
-        Poundpay.verified_callback?(signature, request.POST) || handle_unverified_callback
+        Poundpay.verified_callback?(signature, request.POST) || handle_unverified_poundpay_callback
       end
 
-      def handle_unverified_callback
+      def handle_unverified_poundpay_callback
         raise RoutingError.new('Not Found')
       end
   end
