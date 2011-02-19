@@ -1,6 +1,8 @@
 require 'poundpay/resource'
 require 'poundpay/elements'
 require 'poundpay/callback'
+require 'poundpay/rails'
+
 
 module Poundpay
   WWW_URL = "https://www.poundpay.com"
@@ -31,6 +33,7 @@ module Poundpay
       Resource.site = "#{api_url}/#{api_version}/"
       Resource.user = developer_sid
       Resource.password = auth_token
+      @configured = true
     end
 
     def configure_from_hash(config)
@@ -39,6 +42,20 @@ module Poundpay
         c.api_url = config["api_url"] || API_URL
         c.api_version = config["api_version"] || API_VERSION
       end
+    end
+
+    def clear_config!
+      @www_url = nil
+      @api_url = nil
+      @api_version = nil
+      Resource.site = nil
+      Resource.user = nil
+      Resource.password = nil
+      @configured = false
+    end
+
+    def configured?
+      @configured
     end
 
     def www_url

@@ -12,6 +12,10 @@ describe Poundpay do
       "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a")
   end
 
+  after (:all) do
+    Poundpay.clear_config!
+  end
+
   describe ".calculate_signature" do
     it "should calculate the correct signature using HMAC-SHA1" do
       signature = Poundpay.calculate_signature(valid_callback[:url], valid_callback[:params])

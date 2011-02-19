@@ -2,6 +2,10 @@ require 'poundpay'
 
 describe Poundpay do
   describe ".configure" do
+    after (:each) do
+      Poundpay.clear_config!
+    end
+
     it "should require developer_sid and auth_token" do
       expect { Poundpay.configure(nil, nil) }.to raise_error(ArgumentError, /required/)
       expect { Poundpay.configure("DV0383d447360511e0bbac00264a09ff3c", nil) }.to raise_error(ArgumentError, /required/)
@@ -60,6 +64,10 @@ describe Poundpay do
       @config = YAML::load_file(path)
     end
 
+    after (:each) do
+      Poundpay.clear_config!
+    end
+
     it "should accept valid development configuration" do
       config = @config["development"]
       Poundpay.configure_from_hash config
@@ -95,6 +103,23 @@ describe Poundpay do
 
     it "should not accept an invalid configuration" do
       expect { Poundpay.configure_from_hash @config["invalid"] }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe ".clear_config!" do
+    it "should clear all Poundpay configs" do
+      Poundpay.configured?.should be_false
+      Poundpay.configure("DV0383d447360511e0bbac00264a09ff3c", "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a")
+      Poundpay.configured?.should be_true
+
+      Poundpay.clear_config!
+      Poundpay.configured?.should be_false
+      Poundpay.www_url.should == Poundpay::WWW_URL
+      Poundpay.api_url.should == Poundpay::API_URL
+      Poundpay.api_version.should == Poundpay::API_VERSION
+      Poundpay::Resource.site.should == nil
+      Poundpay::Resource.user.should == nil
+      Poundpay::Resource.password.should == nil
     end
   end
 end
