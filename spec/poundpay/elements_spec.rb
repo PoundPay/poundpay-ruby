@@ -33,8 +33,8 @@ describe Payment do
 
   describe "#release" do
     it "should not be able to release a STAGED payment" do
-      @created_payment = Payment.new created_payment_attributes
-      expect {@created_payment.release}.to raise_error(PaymentReleaseException)
+      @staged_payment = Payment.new staged_payment_attributes
+      expect {@staged_payment.release}.to raise_error(PaymentReleaseException)
     end
 
     it "should release an ESCROWED payment" do
