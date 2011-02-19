@@ -11,6 +11,14 @@ module Poundpay
     attr_writer :api_version
 
     def configure(developer_sid, auth_token)
+      if not developer_sid
+        raise ArgumentError.new "developer_sid is required"
+      end
+
+      if not auth_token
+        raise ArgumentError.new "auth_token is required"
+      end
+
       unless developer_sid.start_with? "DV"
         raise ArgumentError.new "developer_sid should start with 'DV'.  Make sure " \
           "you're using the right developer_sid"
@@ -23,6 +31,14 @@ module Poundpay
       Resource.site = "#{api_url}/#{api_version}/"
       Resource.user = developer_sid
       Resource.password = auth_token
+    end
+
+    def configure_from_hash(config)
+      configure(config["developer_sid"], config["auth_token"]) do |c|
+        c.www_url = config["www_url"] || WWW_URL
+        c.api_url = config["api_url"] || API_URL
+        c.api_version = config["api_version"] || API_VERSION
+      end
     end
 
     def www_url
