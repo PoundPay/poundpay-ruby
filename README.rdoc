@@ -1,25 +1,29 @@
 == Poundpay
 
-Poundpay is payments platform for marketplaces 
+Poundpay is a payments platform for marketplaces 
 
 
 == Adding Poundpay to Rails
 
 1. Add the following to your Gemfile
 
-    gem 'poundpay', '~> 0.1.2'
+    gem 'poundpay', '~> 0.2.0'
 
 2. At the command prompt, install the gem with bundler
 
     bundle install
 
-3. Add your Poundpay configuration to config/initializers/poundpay.rb
+3. Add your configuration to config/poundpay.yml in your Rails project
 
-    Poundpay.configure(
-      "DV0383d447360511e0bbac00264a09ff3c",  # developer_sid
-      "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a",  # auth_token
-      api_url = "https://api-sandbox.poundpay.com"  # Note: Leave out for production
-    )
+    development:
+      developer_sid: DV0383d447360511e0bbac00264a09ff3c
+      auth_token: c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a
+      www_url: https://www-sandbox.poundpay.com
+      api_url: https://api-sandbox.poundpay.com
+
+    production:
+      developer_sid: DV8dd93f0f3c6411e0863f00264a09ff3c
+      auth_token: d8c4ea1bafd3fcac8c1062a72c22bcdb09321deb1041df257165cd6449def0de
 
 4. Protect your callback controller
 
@@ -60,13 +64,14 @@ the repeat flow when they are not prompted to reenter their credit card informat
         payment_sid: <%= @payment.sid %>,
         success: handlePaymentSuccess,
         error: handlePaymentError,
-        cardholder_name: 'Fred Nietzsche', // note: optional
-        phone_number: '4085551234', // note: optional
-        server: 'https://www-sandbox.poundpay.com' // note: exclude this property when in production
+        cardholder_name: "Fred Nietzsche", // Optional
+        phone_number: "4085551234", // Optional
+        server: "#{Poundpay.www_url}"
       });
     </script>
 
 
 == Releasing a payment
 
+    payment = Payment.find(payment_sid)
     payment.release
