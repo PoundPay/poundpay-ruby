@@ -1,3 +1,5 @@
+require 'uri'
+
 require 'poundpay/resource'
 
 class PaymentReleaseException < Exception
@@ -8,6 +10,25 @@ module Poundpay
     def self.me
       find(self.user)
     end
+
+    def save
+      validate_url callback_url
+      super
+    end
+
+    def callback_url=(url)
+      validate_url url
+      attributes['callback_url'] = url
+    end
+
+    protected
+      def validate_url(url)
+        begin
+          URI.parse(url) unless url == nil or url == ''
+        rescue URI::InvalidURIError
+          raise URI::InvalidURIError.new "Invalid URL format: #{url}"
+        end
+      end
   end
 
   class Payment < Resource

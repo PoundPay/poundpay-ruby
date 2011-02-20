@@ -24,6 +24,33 @@ describe Developer do
       @developer = Developer.me
     end
   end
+
+  describe "#callback_url=" do
+    before (:all) do
+      @developer = Developer.new :callback_url => nil
+    end
+
+    it "should not allow invalid urls to be assigned" do
+      invalid_url = "http://71.212.135.207:3000:payments"  # There's a colon after the port number instead of a backslash
+      expect { @developer.callback_url = invalid_url }.to raise_error(URI::InvalidURIError, /format/)
+    end
+
+    it "should allow a developer to set their url" do
+      valid_url = "http://71.212.135.207:3000/payments"
+      @developer.callback_url = valid_url
+      @developer.callback_url.should == valid_url
+      @developer.callback_url = nil
+      @developer.callback_url.should == nil
+    end
+  end
+
+  describe "#save" do
+    it "should not allow saving with an invalid callback_url" do
+      Developer.should_not_receive(:create)
+      developer = Developer.new :callback_url => 'i am invalid'
+      expect { developer.save }.to raise_error(URI::InvalidURIError)
+    end
+  end
 end
 
 describe Payment do
