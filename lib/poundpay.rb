@@ -13,13 +13,9 @@ module Poundpay
     attr_writer :api_version
 
     def configure(developer_sid, auth_token)
-      if not developer_sid
-        raise ArgumentError.new "developer_sid is required"
-      end
-
-      if not auth_token
-        raise ArgumentError.new "auth_token is required"
-      end
+      warn "warning: Poundpay is already configured" if configured?
+      raise ArgumentError.new "developer_sid is required" unless developer_sid
+      raise ArgumentError.new "auth_token is required" unless auth_token
 
       unless developer_sid.start_with? "DV"
         raise ArgumentError.new "developer_sid should start with 'DV'.  Make sure " \
