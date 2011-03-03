@@ -73,7 +73,7 @@ the repeat flow when they are not prompted to reenter their credit card informat
         error: handlePaymentError,
         cardholder_name: "Fred Nietzsche", // Optional
         phone_number: "4085551234", // Optional
-        server: "#{Poundpay.www_url}"
+        server: "<%= Poundpay.www_url %>"
       });
     </script>
 
