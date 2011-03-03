@@ -13,10 +13,7 @@ Poundpay is a payments platform for marketplaces
 
     bundle install
 
-3. Create the file config/poundpay.yml and add your configurations
-
-Note: Make sure your YAML file ends with a blank line; otherwise, Ruby
-will give you a completely unintelligible error message
+3. Create the file config/poundpay.yml and add your configurations. Note: Make sure your YAML file ends with a blank line; otherwise, Ruby will give you a completely unintelligible error message
 
     development:
       developer_sid: DV0383d447360511e0bbac00264a09ff3c
@@ -41,44 +38,44 @@ will give you a completely unintelligible error message
 Adding the payer_sid (from a previous payment), will cause the payer to see
 the repeat flow when they are not prompted to reenter their credit card information
 
-    @payment = Poundpay::Payment.create(
-      :amount                  => 20000,
-      :payer_fee_amount        => 0,
-      :payer_email_address     => "fred@example.com",
-      :payer_sid               => "97f51e5c38e211e08625e7af17bae06a",  # Optional
-      :recipient_fee_amount    => 500,
-      :recipient_email_address => "david@example.com",
-      :description             => "Beats by Dr. Dre",
-    )
+  @payment = Poundpay::Payment.create(
+    :amount                  => 20000,
+    :payer_fee_amount        => 0,
+    :payer_email_address     => "fred@example.com",
+    :payer_sid               => "97f51e5c38e211e08625e7af17bae06a",  # Optional
+    :recipient_fee_amount    => 500,
+    :recipient_email_address => "david@example.com",
+    :description             => "Beats by Dr. Dre",
+  )
 
 
 == Serving IFRAME
 
-    <script src="https://www.poundpay.com/js/poundpay.js"></script>
+  <script src="https://www.poundpay.com/js/poundpay.js"></script>
 
-    <div id="pound-root"></div>
+  <div id="pound-root"></div>
 
-    <script>
-      function handlePaymentSuccess() {
-        // do something
-      }
+  <script>
+    function handlePaymentSuccess() {
+      // do something
+    }
 
-      function handlePaymentError() {
-        // handle error
-      }
+    function handlePaymentError() {
+      // handle error
+    }
 
-      PoundPay.init({
-        payment_sid: <%= @payment.sid %>,
-        success: handlePaymentSuccess,
-        error: handlePaymentError,
-        cardholder_name: "Fred Nietzsche", // Optional
-        phone_number: "4085551234", // Optional
-        server: "<%= Poundpay.www_url %>"
-      });
-    </script>
+    PoundPay.init({
+      payment_sid: <%= @payment.sid %>,
+      success: handlePaymentSuccess,
+      error: handlePaymentError,
+      cardholder_name: "Fred Nietzsche", // Optional
+      phone_number: "4085551234", // Optional
+      server: "<%= Poundpay.www_url %>"
+    });
+  </script>
 
 
 == Releasing a payment
 
-    payment = Payment.find(payment_sid)
-    payment.release
+  payment = Payment.find(payment_sid)
+  payment.release
