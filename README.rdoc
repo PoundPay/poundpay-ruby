@@ -61,7 +61,7 @@ Poundpay is a payments platform for marketplaces
     }
 
     PoundPay.init({
-      payment_sid: <%= @payment.sid %>,
+      payment_sid: "<%= @payment.sid %>",
       success: handlePaymentSuccess,
       error: handlePaymentError,
       cardholder_name: "Fred Nietzsche", // Optional
