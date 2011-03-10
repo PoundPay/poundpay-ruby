@@ -35,18 +35,14 @@ Poundpay is a payments platform for marketplaces
 
 
 == Creating a payment
-Adding the payer_sid (from a previous payment), will cause the payer to see
-the repeat flow when they are not prompted to reenter their credit card information
 
   @payment = Poundpay::Payment.create(
     :amount                  => 20000,
     :payer_fee_amount        => 0,
     :payer_email_address     => "fred@example.com",
-    :payer_sid               => "97f51e5c38e211e08625e7af17bae06a",  # Optional
     :recipient_fee_amount    => 500,
     :recipient_email_address => "david@example.com",
-    :description             => "Beats by Dr. Dre",
-  )
+    :description             => "Beats by Dr. Dre")
 
 
 == Serving IFRAME
