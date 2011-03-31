@@ -7,7 +7,7 @@ Poundpay is a payments platform for marketplaces
 
 1. Add the following to your Gemfile
 
-    gem 'poundpay', '~> 0.2.1'
+    gem 'poundpay', '~> 0.2.3'
 
 2. At the command prompt, install the gem with bundler
 
@@ -74,6 +74,12 @@ Poundpay is a payments platform for marketplaces
 
   payment = Poundpay::Payment.find(payment_sid)
   payment.release
+
+
+== Cancel a payment
+
+  payment = Poundpay::Payment.find(payment_sid)
+  payment.cancel
 
 
 == Setting callback url
