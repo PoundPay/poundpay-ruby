@@ -65,7 +65,6 @@ Poundpay is a payments platform for marketplaces
       success: handlePaymentSuccess,
       error: handlePaymentError,
       cardholder_name: "Fred Nietzsche", // Optional
-      phone_number: "4085551234", // Optional
       server: "<%= Poundpay.www_url %>"
     });
   </script>
@@ -73,5 +72,12 @@ Poundpay is a payments platform for marketplaces
 
 == Releasing a payment
 
-  payment = Payment.find(payment_sid)
+  payment = Poundpay::Payment.find(payment_sid)
   payment.release
+
+
+== Setting callback url
+
+  me = Poundpay::Developer.me
+  me.callback_url = "http://awesomemarketplace.com/poundpay/callback"
+  me.save!
