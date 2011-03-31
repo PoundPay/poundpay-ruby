@@ -5,6 +5,9 @@ require 'poundpay/resource'
 class PaymentReleaseException < Exception
 end
 
+class PaymentCancelException < Exception
+end
+
 module Poundpay
   class Developer < Resource
     def self.me
@@ -39,6 +42,15 @@ module Poundpay
       # Tried setting status with status=, but save still had status == 'ESCROWED'.
       # Setting the status through the attributes, however, does work.
       attributes['status'] = 'RELEASED'
+      save
+    end
+
+    def cancel
+      unless status == 'ESCROWED'
+        raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED payments may be canceled"
+      end
+
+      attributes['status'] = 'CANCELED'
       save
     end
   end
