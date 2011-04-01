@@ -25,7 +25,7 @@ Poundpay is a payments platform for marketplaces
       developer_sid: DV8dd93f0f3c6411e0863f00264a09ff3c
       auth_token: d8c4ea1bafd3fcac8c1062a72c22bcdb09321deb1041df257165cd6449def0de
 
-4. Create the file initializers/poundpay.rb and add the following
+4. Create the file config/initializers/poundpay.rb and add the following
 
     Poundpay.configure_from_yaml "config/poundpay.yml"
 
