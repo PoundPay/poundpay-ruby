@@ -34,9 +34,9 @@ module Poundpay
       @attributes
     end
 
-    def cancelled_payment_attributes
+    def canceled_payment_attributes
       @attributes = staged_payment_attributes
-      @attributes["status"] = "CANCELLED"
+      @attributes["status"] = "CANCELED"
       @attributes
     end
   end
