@@ -87,12 +87,12 @@ describe Payment do
       expect {@staged_payment.cancel}.to raise_error(PaymentCancelException)
     end
 
-    it "should release an ESCROWED payment" do
+    it "should cancel an ESCROWED payment" do
       @escrowed_payment = Payment.new escrowed_payment_attributes
-      @escrowed_payment.should_receive(:save).and_return(Payment.new canceled_payment_attributes)
+      @escrowed_payment.should_receive(:save).and_return(Payment.new cancelled_payment_attributes)
 
       @escrowed_payment.cancel
-      @escrowed_payment.status.should == 'CANCELED'
+      @escrowed_payment.status.should == 'CANCELLED'
     end
   end
 end

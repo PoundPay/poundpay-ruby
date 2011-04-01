@@ -50,7 +50,7 @@ module Poundpay
         raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED payments may be canceled"
       end
 
-      attributes['status'] = 'CANCELED'
+      attributes['status'] = 'CANCELLED'
       save
     end
   end
