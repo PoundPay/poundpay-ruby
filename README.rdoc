@@ -70,16 +70,12 @@ Poundpay is a payments platform for marketplaces
   </script>
 
 
-== Releasing a payment
+== Payment methods
 
   payment = Poundpay::Payment.find(payment_sid)
-  payment.release
-
-
-== Cancel a payment
-
-  payment = Poundpay::Payment.find(payment_sid)
-  payment.cancel
+  payment.escrow   # AUTHORIZED -> ESCROWED.  Credit card is charged
+  payment.release  # ESCROWED   -> RELEASED.  Recipient receives money
+  payment.cancel   # ESCROWED   -> CANCELED.  Payer receives refund
 
 
 == Setting callback url
