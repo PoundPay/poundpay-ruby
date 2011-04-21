@@ -2,10 +2,16 @@ require 'uri'
 
 require 'poundpay/resource'
 
-class PaymentReleaseException < Exception
+class PaymentException < Exception
 end
 
-class PaymentCancelException < Exception
+class PaymentEscrowException < PaymentException
+end
+
+class PaymentReleaseException < PaymentException
+end
+
+class PaymentCancelException < PaymentException
 end
 
 module Poundpay
@@ -35,6 +41,14 @@ module Poundpay
   end
 
   class Payment < Resource
+    def escrow
+      unless status == 'AUTHORIZED'
+        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be released"
+      end
+      attributes['status'] = 'ESCROWED'
+      save
+    end
+
     def release
       unless status == 'ESCROWED'
         raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be released"

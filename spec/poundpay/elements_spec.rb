@@ -66,6 +66,21 @@ describe Payment do
     Poundpay.clear_config!
   end
 
+  describe "#escrow" do
+    it "should not be able to escrow a STAGED payment" do
+      @staged_payment = Payment.new staged_payment_attributes
+      expect {@staged_payment.escrow}.to raise_error(PaymentEscrowException)
+    end
+
+    it "should escrow an AUTHORIZED payment" do
+      @authorized_payment = Payment.new authorized_payment_attributes
+      @authorized_payment.should_receive(:save).and_return(Payment.new escrowed_payment_attributes)
+
+      @authorized_payment.escrow
+      @authorized_payment.status.should == 'ESCROWED'
+    end
+  end
+
   describe "#release" do
     it "should not be able to release a STAGED payment" do
       @staged_payment = Payment.new staged_payment_attributes

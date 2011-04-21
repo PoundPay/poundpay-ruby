@@ -22,6 +22,12 @@ module Poundpay
       }
     end
 
+    def authorized_payment_attributes
+      @attributes = staged_payment_attributes
+      @attributes["status"] = "AUTHORIZED"
+      @attributes
+    end
+
     def escrowed_payment_attributes
       @attributes = staged_payment_attributes
       @attributes["status"] = "ESCROWED"
