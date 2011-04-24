@@ -78,10 +78,3 @@ Poundpay is a payments platform for marketplaces
   payment.escrow   # AUTHORIZED -> ESCROWED.  Credit card is charged
   payment.release  # ESCROWED   -> RELEASED.  Recipient receives money
   payment.cancel   # ESCROWED   -> CANCELED.  Payer receives refund
-
-
-== Setting callback url
-
-  me = Poundpay::Developer.me
-  me.callback_url = "http://awesomemarketplace.com/poundpay/callback"
-  me.save!
