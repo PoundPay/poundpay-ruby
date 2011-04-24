@@ -56,6 +56,17 @@ describe Poundpay do
       Poundpay.api_url.should == "https://api-sandbox.poundpay.com"
       Poundpay.api_version.should == "gold"
     end
+
+    it "should configure callback_url" do
+      callback_url = "http://awesomemarketplace.com/payments/callback"
+      @developer = Poundpay::Developer.new
+      @developer.should_receive(:save!)
+      Poundpay::Developer.should_receive(:me).and_return(@developer)
+      Poundpay.configure("DV0383d447360511e0bbac00264a09ff3c", "c31155b9f944d7aed204bdb2a253fef13b4fdcc6ae1540200449cc4526b2381a") do |c|
+        c.callback_url = callback_url
+      end
+      @developer.callback_url.should == callback_url
+    end
   end
 
   describe ".configure_from_hash" do
@@ -103,6 +114,16 @@ describe Poundpay do
 
     it "should not accept an invalid configuration" do
       expect { Poundpay.configure_from_hash @config["invalid"] }.to raise_error(ArgumentError)
+    end
+
+    it "should configure callback_url" do
+      config = @config["production"]
+      config["callback_url"] = "http://awesomemarketplace.com/payments/callback"
+      @developer = Poundpay::Developer.new
+      @developer.should_receive(:save!)
+      Poundpay::Developer.should_receive(:me).and_return(@developer)
+      Poundpay.configure_from_hash config
+      @developer.callback_url.should == config["callback_url"]
     end
   end
 

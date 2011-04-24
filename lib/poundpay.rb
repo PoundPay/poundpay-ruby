@@ -11,6 +11,7 @@ module Poundpay
 
   class << self
     attr_writer :api_version
+    attr_accessor :callback_url
 
     def configure(developer_sid, auth_token)
       warn "warning: Poundpay is already configured" if configured?
@@ -30,6 +31,13 @@ module Poundpay
       Resource.user = developer_sid
       Resource.password = auth_token
       @configured = true
+
+      # Set callback_url if defined in configuration
+      if callback_url
+        @me = Developer.me
+        @me.callback_url = callback_url
+        @me.save!
+      end
     end
 
     def configure_from_hash(config)
@@ -37,6 +45,7 @@ module Poundpay
         c.www_url = config["www_url"] || WWW_URL
         c.api_url = config["api_url"] || API_URL
         c.api_version = config["api_version"] || API_VERSION
+        c.callback_url = config["callback_url"] || nil
       end
     end
 
@@ -44,6 +53,7 @@ module Poundpay
       @www_url = nil
       @api_url = nil
       @api_version = nil
+      @callback_url = nil
       Resource.site = nil
       Resource.user = nil
       Resource.password = nil
