@@ -21,16 +21,18 @@ module Poundpay
 end
 
 
-module ActionController
-  class Base
-    protected
-      def verify_poundpay_callback
-        signature = request.headers['HTTP_X_POUNDPAY_SIGNATURE']
-        Poundpay.verified_callback?(signature, request.POST) || handle_unverified_poundpay_callback
-      end
+if defined? Rails
+  module ActionController
+    class Base
+      protected
+        def verify_poundpay_callback
+          signature = request.headers['HTTP_X_POUNDPAY_SIGNATURE']
+          Poundpay.verified_callback?(signature, request.POST) || handle_unverified_poundpay_callback
+        end
 
-      def handle_unverified_poundpay_callback
-        raise RoutingError.new('Not Found')
-      end
+        def handle_unverified_poundpay_callback
+          raise RoutingError.new('Not Found')
+        end
+    end
   end
 end

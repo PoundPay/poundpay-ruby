@@ -7,7 +7,7 @@ Poundpay is a payments platform for marketplaces
 
 1. Add the following to your Gemfile
 
-    gem 'poundpay', '~> 0.2.3'
+    gem 'poundpay', '~> 0.2.0'
 
 2. At the command prompt, install the gem with bundler
 
