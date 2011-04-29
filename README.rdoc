@@ -67,10 +67,10 @@ Poundpay is a payments platform for marketplaces
       success: handlePaymentSuccess,
       error: handlePaymentError,
       name: "Fred Nietzsche", // Optional
-      address_street: "330 Townsend St",
-      address_city: "San Francisco",
-      address_state: "California",
-      address_zip: "94107",
+      address_street: "330 Townsend St", // Optional
+      address_city: "San Francisco", // Optional
+      address_state: "California", // Optional
+      address_zip: "94107", // Optional
       server: "<%= Poundpay.www_url %>"
     });
   </script>
