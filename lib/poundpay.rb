@@ -34,9 +34,8 @@ module Poundpay
 
       # Set callback_url if defined in configuration
       if callback_url
-        @me = Developer.me
+        @me = Developer.new
         @me.callback_url = callback_url
-        @me.save!
       end
     end
 
