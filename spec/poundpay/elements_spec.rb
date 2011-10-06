@@ -94,7 +94,44 @@ describe Payment do
       @escrowed_payment.release
       @escrowed_payment.status.should == 'RELEASED'
     end
+
+    it "should release a PARTIALLY_RELEASED payment" do
+      @escrowed_payment = Payment.new partially_released_payment_attributes
+      @escrowed_payment.should_receive(:save).and_return(Payment.new partially_released_payment_attributes)
+
+      @escrowed_payment.release
+      @escrowed_payment.status.should == 'RELEASED'
+    end
   end
+
+  describe "#partially_release" do
+    it "should not be able to partially release a STAGED payment" do
+      @staged_payment = Payment.new staged_payment_attributes
+      expect {@staged_payment.release}.to raise_error(PaymentReleaseException)
+    end
+
+    it "should partially release an ESCROWED payment" do
+      @escrowed_payment = Payment.new escrowed_payment_attributes
+      @escrowed_payment.should_receive(:save).and_return(Payment.new released_payment_attributes)
+
+      @escrowed_payment.partially_release(123)
+      @escrowed_payment.status.should == 'PARTIALLY_RELEASED'
+    end
+
+    it "should partially release a PARTIALLY_RELEASED payment" do
+      @escrowed_payment = Payment.new partially_released_payment_attributes
+      @escrowed_payment.should_receive(:save).and_return(Payment.new partially_released_payment_attributes)
+
+      @escrowed_payment.partially_release(123)
+      @escrowed_payment.status.should == 'PARTIALLY_RELEASED'
+    end
+
+    it "should not be able to partially release a RELEASED payment" do
+      @staged_payment = Payment.new staged_payment_attributes
+      expect {@staged_payment.partially_release(123)}.to raise_error(PaymentPartiallyReleaseException)
+    end
+  end
+  
 
   describe "#cancel" do
     it "should not be able to cancel a STAGED payment" do
@@ -102,9 +139,17 @@ describe Payment do
       expect {@staged_payment.cancel}.to raise_error(PaymentCancelException)
     end
 
-    it "should release an ESCROWED payment" do
+    it "should cancel an ESCROWED payment" do
       @escrowed_payment = Payment.new escrowed_payment_attributes
       @escrowed_payment.should_receive(:save).and_return(Payment.new canceled_payment_attributes)
+
+      @escrowed_payment.cancel
+      @escrowed_payment.status.should == 'CANCELED'
+    end
+    
+    it "should cancel a PARTIALLY_RELEASED payment" do
+      @escrowed_payment = Payment.new partially_released_payment_attributes
+      @escrowed_payment.should_receive(:save).and_return(Payment.new partially_released_payment_attributes)
 
       @escrowed_payment.cancel
       @escrowed_payment.status.should == 'CANCELED'

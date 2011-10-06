@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
 
   s.rubyforge_project = "poundpay"
 
-  s.add_dependency("activeresource", ">= 3.0")
+  s.add_dependency("activeresource", "~> 3.0.0")
 
   s.add_development_dependency("rspec", ">= 2.0")
   s.add_development_dependency("wirble")
