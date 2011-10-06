@@ -79,6 +79,7 @@ Poundpay is a payments platform for marketplaces
 == Payment methods
 
   payment = Poundpay::Payment.find(payment_sid)
-  payment.escrow   # AUTHORIZED -> ESCROWED.  Credit card is charged
-  payment.release  # ESCROWED   -> RELEASED.  Recipient receives money
-  payment.cancel   # ESCROWED   -> CANCELED.  Payer receives refund
+  payment.escrow                    # AUTHORIZED -> ESCROWED.  Credit card is charged
+  payment.partially_release(amount) # ESCROWED or PARTIALLY_RELEASED -> PARTIALLY_RELEASED or PARTIALLY_RELEASED. Recipieint recieves a portion of funds.
+  payment.release                   # ESCROWED or PARTIALLY_RELEASED -> RELEASED.  Recipient receives money
+  payment.cancel                    # ESCROWED or PARTIALLY_RELEASED -> CANCELED.  Payer receives refund
