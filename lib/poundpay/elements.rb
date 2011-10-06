@@ -54,7 +54,7 @@ module Poundpay
 
     def partially_release(amount_to_release)
       statuses = ['ESCROWED', 'PARTIALLY_RELEASED']
-      unless statuses.include? status
+      unless statuses.include?(status)
         raise PaymentPartiallyReleaseException.new "Payment status is #{status}.  Only ESCROWED or PARTIALLY_RELEASED payments may be released"
       end
       # Tried setting status with status=, but save still had status == 'ESCROWED'.
@@ -78,7 +78,7 @@ module Poundpay
 
     def cancel
       statuses = ['ESCROWED', 'PARTIALLY_RELEASED']
-      unless statuses.include? status
+      unless statuses.include?(status)
         raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED or PARTIALLY_RELEASED payments may be canceled"
       end
 
