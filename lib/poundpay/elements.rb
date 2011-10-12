@@ -43,6 +43,9 @@ module Poundpay
       end
   end
 
+  class User < Resource
+  end
+
   class Payment < Resource
     def escrow
       unless status == 'AUTHORIZED'
