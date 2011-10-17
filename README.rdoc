@@ -35,6 +35,12 @@ Poundpay is a payments platform for marketplaces
 
     before_filter :verify_poundpay_callback
 
+== Creating a user
+  @user = Poundpay::User.create(
+    :first_name              => "Dart",
+    :last_name               => "Master",
+    :email_address           => "dart-master@example.com")
+
 
 == Creating a payment
 
