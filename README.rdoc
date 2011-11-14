@@ -36,6 +36,7 @@ Poundpay is a payments platform for marketplaces
     before_filter :verify_poundpay_callback
 
 == Creating a user
+
   @user = Poundpay::User.create(
     :first_name              => "Dart",
     :last_name               => "Master",
@@ -53,7 +54,7 @@ Poundpay is a payments platform for marketplaces
     :description             => "Beats by Dr. Dre")
 
 
-== Serving IFRAME
+== Serving the payment IFRAME
 
   <script src="https://www.poundpay.com/js/poundpay.js"></script>
 
@@ -86,6 +87,46 @@ Poundpay is a payments platform for marketplaces
 
   payment = Poundpay::Payment.find(payment_sid)
   payment.escrow                    # AUTHORIZED -> ESCROWED.  Credit card is charged
-  payment.partially_release(amount) # ESCROWED or PARTIALLY_RELEASED -> PARTIALLY_RELEASED or PARTIALLY_RELEASED. Recipieint recieves a portion of funds.
   payment.release                   # ESCROWED or PARTIALLY_RELEASED -> RELEASED.  Recipient receives money
   payment.cancel                    # ESCROWED or PARTIALLY_RELEASED -> CANCELED.  Payer receives refund
+
+
+== Creating a charge permission
+
+  @charge_permission = Poundpay::ChargePermission.create(
+    :email_address           => "fred@example.com")
+
+
+== Serving the charge permission IFRAME
+
+  <script src="https://www.poundpay.com/js/poundpay.js"></script>
+
+  <div id="pound-root"></div>
+
+  <script>
+    function handleChargePermissionSuccess() {
+      // do something
+    }
+
+    function handleChargePermissionError() {
+      // handle error
+    }
+
+    PoundPay.init({
+      charge_permission_sid: "<%= @charge_permission.sid %>",
+      success: handleChargePermissionSuccess,
+      error: handleChargePermissionError,
+      name: "Fred Nietzsche", // Optional
+      address_street: "330 Townsend St", // Optional
+      address_city: "San Francisco", // Optional
+      address_state: "California", // Optional
+      address_zip: "94107", // Optional
+      server: "<%= Poundpay.www_url %>"
+    });
+  </script>
+
+
+== Charge permission methods
+
+  charge_permission = Poundpay::ChargePermission.find(charge_permission_sid)
+  charge_permission.deactivate      # CREATED or ACTIVE -> INACTIVE. Charge permission is deactivated and can no longer be used to authorize payments for the associated payer.

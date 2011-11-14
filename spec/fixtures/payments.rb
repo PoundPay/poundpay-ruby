@@ -34,12 +34,6 @@ module Poundpay
       @attributes
     end
 
-    def partially_released_payment_attributes
-      @attributes = staged_payment_attributes
-      @attributes["status"] = "PARTIALLY_RELEASED"
-      @attributes
-    end
-
     def released_payment_attributes
       @attributes = staged_payment_attributes
       @attributes["status"] = "RELEASED"

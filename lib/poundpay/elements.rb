@@ -8,13 +8,16 @@ end
 class PaymentEscrowException < PaymentException
 end
 
-class PaymentPartiallyReleaseException < PaymentException
-end
-
 class PaymentReleaseException < PaymentException
 end
 
 class PaymentCancelException < PaymentException
+end
+
+class ChargePermissionException < Exception
+end
+
+class ChargePermissionDeactivateException < ChargePermissionException
 end
 
 module Poundpay
@@ -25,12 +28,18 @@ module Poundpay
 
     def save
       validate_url callback_url
+      validate_url charge_permission_callback_url
       super
     end
 
     def callback_url=(url)
       validate_url url
       attributes['callback_url'] = url
+    end
+    
+    def charge_permission_callback_url=(url)
+      validate_url url
+      attributes['charge_permission_callback_url'] = url
     end
 
     protected
@@ -45,33 +54,31 @@ module Poundpay
 
   class User < Resource
   end
+  
+  class ChargePermission < Resource
+    def deactivate
+      states = ['CREATED', 'ACTIVE']
+      unless states.include?(state)
+        raise ChargePermissionDeactivateException.new "Charge permission state is #{state}.  Only CREATED or ACTIVE charge permissions may be deactivated."
+      end
+      attributes['state'] = 'INACTIVE'
+      save
+    end
+  end
 
   class Payment < Resource
     def escrow
       unless status == 'AUTHORIZED'
-        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be released"
+        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be released."
       end
       attributes['status'] = 'ESCROWED'
       save
     end
 
-    def partially_release(amount_to_release)
-      statuses = ['ESCROWED', 'PARTIALLY_RELEASED']
-      unless statuses.include?(status)
-        raise PaymentPartiallyReleaseException.new "Payment status is #{status}.  Only ESCROWED or PARTIALLY_RELEASED payments may be released"
-      end
-      # Tried setting status with status=, but save still had status == 'ESCROWED'.
-      # Setting the status through the attributes, however, does work.
-      attributes['status'] = 'PARTIALLY_RELEASED'
-      attributes['amount_to_release'] = amount_to_release
-      save
-      attributes.delete('amount_to_release')
-    end
-
     def release
-      statuses = ['ESCROWED', 'PARTIALLY_RELEASED']
+      statuses = ['ESCROWED']
       unless statuses.include?(status)
-        raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED or PARTIALLY_RELASED payments may be released"
+        raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be released."
       end
       # Tried setting status with status=, but save still had status == 'ESCROWED'.
       # Setting the status through the attributes, however, does work.
@@ -80,9 +87,9 @@ module Poundpay
     end
 
     def cancel
-      statuses = ['ESCROWED', 'PARTIALLY_RELEASED']
+      statuses = ['ESCROWED']
       unless statuses.include?(status)
-        raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED or PARTIALLY_RELEASED payments may be canceled"
+        raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED payments may be canceled."
       end
 
       attributes['status'] = 'CANCELED'
