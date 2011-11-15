@@ -7,7 +7,11 @@ module Poundpay
     self.format = Formats::UrlencodedJsonFormat
 
     class << self
-      attr_accessor_with_default(:primary_key, 'sid')
+      attr_accessor :primary_key
+      
+      def primary_key
+        @primary_key ||= 'sid'
+      end
 
       # Modified default to not use an extension
       def element_path(id, prefix_options = {}, query_options = nil)
