@@ -1,6 +1,7 @@
 require 'poundpay/resource'
 require 'poundpay/elements'
 require 'poundpay/callback'
+require 'poundpay/exceptions'
 require 'poundpay/rails'
 
 
@@ -24,7 +25,7 @@ module Poundpay
       end
 
       yield self if block_given?
-        
+
       api_url.sub! /(\/)$/, ""  # Remove trailing backslash
       www_url.sub /(\/)$/, ""
       Resource.site = "#{api_url}/#{api_version}/"
