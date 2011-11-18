@@ -5,6 +5,9 @@ require 'poundpay/resource'
 class PaymentException < Exception
 end
 
+class PaymentAuthorizeException < PaymentException
+end
+
 class PaymentEscrowException < PaymentException
 end
 
@@ -67,9 +70,18 @@ module Poundpay
   end
 
   class Payment < Resource
+
+    def authorize
+      unless status == 'STAGED'
+        raise PaymentAuthorizeException.new "Payment status is #{status}.  Only STAGED payments may be AUTHORIZED."
+      end
+      attributes['status'] = 'ESCROWED'
+      save
+    end
+
     def escrow
       unless status == 'AUTHORIZED'
-        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be released."
+        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be ESCROWED."
       end
       attributes['status'] = 'ESCROWED'
       save
@@ -78,7 +90,7 @@ module Poundpay
     def release
       statuses = ['ESCROWED']
       unless statuses.include?(status)
-        raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be released."
+        raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be RELEASED."
       end
       # Tried setting status with status=, but save still had status == 'ESCROWED'.
       # Setting the status through the attributes, however, does work.
@@ -87,9 +99,10 @@ module Poundpay
     end
 
     def cancel
-      statuses = ['ESCROWED']
+      statuses = ['AUTHORIZED', 'ESCROWED']
       unless statuses.include?(status)
-        raise PaymentCancelException.new "Payment status is #{status}.  Only ESCROWED payments may be canceled."
+        raise PaymentCancelException.new "Payment status is #{status}.  Only payments with statuses " \
+        "#{statuses.join(', ')} may be canceled"
       end
 
       attributes['status'] = 'CANCELED'
