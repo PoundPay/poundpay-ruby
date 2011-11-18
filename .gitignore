@@ -2,3 +2,5 @@ pkg/
 Gemfile.lock
 *.gem
 .project
+.idea
+.bundle

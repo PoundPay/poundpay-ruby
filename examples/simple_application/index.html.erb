@@ -1,18 +1,129 @@
+<!DOCTYPE html>
 <html>
-  <title>Simple Marketplace</title>
-  <script src="<%= www_poundpay_url %>/js/poundpay.js"></script>
+  <head>
+    <meta charset="utf-8">
+    <meta name="description" content="Simple Marketplace">
+    <title>Simple MarketPlace</title>
+    <link rel="icon" href="static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="static/css/simplemp.css">
+    <script src="static/js/jquery-1.6.1.js"></script>
+    <script src="static/js/jquery-ui-1.8.13.custom.min.js"></script>
+    <script src="<%= www_poundpay_url %>/js/poundpay.js"></script>
+    <script src="static/js/simplemp.js"></script>
+  </head>
   <body>
-    <h1>Simple Marketplace</h1>
-    <h2><%= payment['description'] %></h2>
-    <div id="pound-root"></div>
-    <script type="text/javascript">
-      PoundPay.init({
-        // success: successCallback,  // Optional js callback
-        payment_sid: "<%= payment['sid'] %>",
-        server: "<%= www_poundpay_url %>",
-        cardholder_name: "David Stonethrower",  // Optional
-        phone_number: "6505551234"  // Optional
-      });
-    </script>
+  <h1>Create charge permission</h1>
+  <table id="chargePermissionTable">
+    <tr>
+      <td>Email
+      <td><input type="text" class="text" id="email_address" value="<%= payment['payer_email_address'] %>">
+    </tr>
+  </table>
+  <a href="javascript:;" onclick="createChargePermission();">Create Charge Permission</a><br>
+  <a href="javascript:;" onclick="findChargePermission();">Find Charge Permission</a><br>
+  <pre id="find_charge_permission_results"></pre>
+
+  <h1>Display charge permission iframe</h1>
+  <table>
+    <tr>
+      <td>Charge permission id
+      <td><input type="text" class="text" id="charge_permission_id">
+    </tr>
+    <tr>
+      <td>Card holder name</td>
+      <td><input type="text" class="text" id="charge_permission_cardholder_name">
+    </tr>
+    <tr>
+      <td>server
+      <td><input type="text" class="text" id="charge_permission_server" value="<%= www_poundpay_url %>">
+    </tr>
+  </table>
+  <a href="javascript:;" onclick="deactivateChargePermission();">Deactivate Charge Permission</a><br>
+  <a href="javascript:;" onclick="startChargePermissionIFrame();">Start Charge Permission IFrame</a><br>
+  <div id="pound-pcp"></div>
+
+  <h1>Create payment</h1>
+  <table id="paymentsTable">
+    <tr>
+      <td>Payment Amount
+      <td><input type="text" class="text" id="amount" value="<%= payment['amount'] %>">
+    </tr>
+    <tr>
+      <td>Payer Fee</td>
+      <td><input type="text" class="text" id="payer_fee_amount" value="<%= payment['payer_fee_amount'] %>">
+    </tr>
+    <tr>
+      <td>Recipient Fee</td>
+      <td><input type="text" class="text" id="recipient_fee_amount" value="<%= payment['recipient_fee_amount'] %>">
+    </tr>
+    <tr>
+      <td>Payer Email</td>
+      <td><input type="text" class="text" id="payer_email_address" value="<%= payment['payer_email_address'] %>">
+    </tr>
+    <tr>
+      <td>Recipient Email</td>
+      <td><input type="text" class="text" id="recipient_email_address" value="<%= payment['recipient_email_address'] %>">
+    </tr>
+    <tr>
+      <td>Description</td>
+      <td><input type="text" class="text" id="description" value="<%= payment['description'] %>">
+    </tr>
+  </table>
+
+  <a href="javascript:;" onclick="createPayment();">Create Payment</a>
+
+  <h1>Display payment iframe</h1>
+  <table>
+    <tr>
+      <td>Payment request id</td>
+      <td><input type="text" class="text" id="payment_id">
+    </tr>
+    <tr>
+      <td>Card holder name</td>
+      <td><input type="text" class="text" id="cardholder_name">
+    </tr>
+    <tr>
+      <td>server</td>
+      <td><input type="text" class="text" id="server" value="<%= www_poundpay_url %>">
+    </tr>
+  </table>
+  <a href="javascript:;" onclick="startIFrame();">Start Payment IFrame</a>
+  <div id="pound-root"></div>
+  <h1 id="paymentComplete" style="display:none;color:green;">
+    Payment Complete
+  </h1>
+  <h1>Create User</h1>
+  <table id="create_user_table">
+    <tr>
+      <td>First Name</td>
+      <td><input type="text" class="text" id="user_first_name">
+    </tr>
+    <tr>
+      <td>Last Name</td>
+      <td><input type="text" class="text" id="user_last_name">
+    </tr>
+    <tr>
+      <td>Email Address</td>
+      <td><input type="text" class="text" id="user_email_address">
+    </tr>
+  </table>
+  <a href="javascript:;" onclick="createUser();">Create User</a>
+
+  <pre id="created_user_results"></pre>
+
+
+  <h1>Payment Operations</h1>
+  <table>
+    <tr>
+      <td>Payment SID
+      <td><input type="text" class="text" id="operating_payment_sid">
+    </tr>
+  </table>
+  <a href="javascript:;" onclick="authorizePayment();">Authorize Payment</a><br>
+  <a href="javascript:;" onclick="escrowPayment();">Escrow Payment</a><br>
+  <a href="javascript:;" onclick="releasePayment();">Release Payment</a><br>
+  <a href="javascript:;" onclick="cancelPayment();">Cancel Payment</a><br>
+
+  <pre id="operation_results"></pre>
   </body>
 </html>
