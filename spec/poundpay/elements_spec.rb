@@ -67,6 +67,21 @@ describe Payment do
     Poundpay.clear_config!
   end
 
+  describe "#authorize" do
+    it "should not be able to authorize a non STAGED payment" do
+      @non_staged_payment = Payment.new authorized_payment_attributes
+      expect {@non_staged_payment.authorize}.to raise_error(PaymentAuthorizeException)
+    end
+
+    it "should authorize a STAGED payment" do
+      @staged_payment = Payment.new staged_payment_attributes
+      @staged_payment.should_receive(:save).and_return(Payment.new authorized_payment_attributes)
+
+      @staged_payment.authorize
+      @staged_payment.status.should == 'AUTHORIZED'
+    end
+  end
+
   describe "#escrow" do
     it "should not be able to escrow a STAGED payment" do
       @staged_payment = Payment.new staged_payment_attributes

@@ -75,7 +75,7 @@ module Poundpay
       unless status == 'STAGED'
         raise PaymentAuthorizeException.new "Payment status is #{status}.  Only STAGED payments may be AUTHORIZED."
       end
-      attributes['status'] = 'ESCROWED'
+      attributes['status'] = 'AUTHORIZED'
       save
     end
 
