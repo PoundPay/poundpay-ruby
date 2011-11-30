@@ -71,6 +71,12 @@ module Poundpay
 
   class Payment < Resource
 
+    def self.batch_update(params)
+      body = self.put('', {}, self.urlencode(params)).body
+      collection = self.format.decode(body)
+      return self.instantiate_collection(collection)
+    end
+
     def authorize
       unless status == 'STAGED'
         raise PaymentAuthorizeException.new "Payment status is #{status}.  Only STAGED payments may be AUTHORIZED."

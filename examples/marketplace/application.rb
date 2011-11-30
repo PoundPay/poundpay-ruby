@@ -70,10 +70,16 @@ class Payment < SimpleController
   end
 
   def authorize request
-    payment = Poundpay::Payment.find(request.POST['sid'])
-    payment.authorize
-    payment.save
-    return PP.pp(payment.schema, ''), "text/html"
+    if request.POST['sid'].kind_of?(Array)
+        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :status => 'authorized')
+        payments = payments.collect! {|p| p.schema }
+        return PP.pp(payments, ''), "text/html"
+    else
+        payment = Poundpay::Payment.find(request.POST['sid'])
+        payment.authorize
+        payment.save
+        return PP.pp(payment.schema, ''), "text/html"
+    end
   end
 
   def release request
@@ -91,10 +97,16 @@ class Payment < SimpleController
   end
 
   def escrow request
-    payment = Poundpay::Payment.find(request.POST['sid'])
-    payment.escrow
-    payment.save
-    return PP.pp(payment.schema, ''), "text/html"
+    if request.POST['sid'].kind_of?(Array)
+        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :status => 'escrowed')
+        payments = payments.collect! {|p| p.schema }
+        return PP.pp(payments, ''), "text/html"
+    else
+        payment = Poundpay::Payment.find(request.POST['sid'])
+        payment.escrow
+        payment.save
+        return PP.pp(payment.schema, ''), "text/html"
+    end
   end
 
 end
@@ -155,7 +167,7 @@ class ChargePermission < SimpleController
   end
 
   def show request
-    charge_permissions = Poundpay::ChargePermission.all(:email_address => request.POST['email_address'])
+    charge_permissions = Poundpay::ChargePermission.find(:all, :params => { :email_address => request.POST['email_address'] })
     if charge_permissions
       return PP.pp(charge_permissions.map {|cp| cp.schema}, ''), 'text/plain'
     else

@@ -31,6 +31,12 @@ module Poundpay
         remove_extension(path)
       end
 
+      # Modified default to not use an extension
+      def custom_method_collection_url(method_name, options = {})
+        path = super(method_name, options)
+        remove_extension(path)
+      end
+
       # Handle paginated collections
       def instantiate_collection(collection, prefix_options = {})
         # TODO: Consume pages
@@ -40,14 +46,14 @@ module Poundpay
 
       protected
         def remove_extension(path)
-          path.sub /(\.#{format.extension})$/, ""
+          path.sub /(\.#{format.extension})/, ""
         end
     end
 
     # Poundpay accepts urlencoded form parameters
     # Ideally we should override this functionality in the format, but it's not very straightforward to do so
     def encode
-      urlencode(@attributes)
+      Resource.urlencode(@attributes)
     end
 
     def collection_name
@@ -55,8 +61,14 @@ module Poundpay
     end
 
     protected
-      def urlencode(params)
-        params.to_a.collect! { |k, v| "#{k}=#{CGI.escape(v.to_s)}" }.join("&")
-      end
+        def self.urlencode(params)
+          params.to_a.collect! { |k, v|
+              if v.kind_of?(Array)
+                v.collect! { |x| "#{k}=#{CGI.escape(x.to_s)}"}.join("&")
+              else
+                "#{k}=#{CGI.escape(v.to_s)}"
+              end 
+          }.join("&")
+        end
   end
 end
