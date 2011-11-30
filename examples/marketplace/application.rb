@@ -3,6 +3,7 @@ require 'poundpay'
 
 require './config'
 
+
 class SimpleController
   attr_reader :poundpay_client
 
@@ -45,17 +46,17 @@ class Payment < SimpleController
 
   def call env
     request = Rack::Request.new(env)
-    return_value = case request.path.gsub(/\/$/, '')  # trim trailing /
-      when '/payment' then request.post? ? create(request) : nil
-      when '/payment/release' then request.post? ? release(request) : nil
-      when '/payment/authorize' then request.post? ? authorize(request) : nil
-      when '/payment/cancel' then request.post? ? cancel(request) : nil
-      when '/payment/escrow' then request.post? ? escrow(request) : nil
+    return_value, mime_type = case request.path.gsub(/\/$/, '')  # trim trailing /
+      when '/payment' then request.post? ? create(request) : [nil, nil]
+      when '/payment/release' then request.post? ? release(request) : [nil, nil]
+      when '/payment/authorize' then request.post? ? authorize(request) : [nil, nil]
+      when '/payment/cancel' then request.post? ? cancel(request) : [nil, nil]
+      when '/payment/escrow' then request.post? ? escrow(request) : [nil, nil]
       else nil
     end
 
     if return_value
-      response = Rack::Response.new([return_value], 201, {"Content-Type" => "text/html"})
+      response = Rack::Response.new([return_value], 201, {"Content-Type" => mime_type})
       response.finish
     else
       return_404
@@ -64,35 +65,36 @@ class Payment < SimpleController
 
   def create request
     payment = Poundpay::Payment.create(request.POST)
-    payment.sid
+    payment.include_root_in_json = false
+    return payment.to_json(), "application/json"
   end
 
   def authorize request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.authorize
     payment.save
-    PP.pp(payment.schema, '')
+    return PP.pp(payment.schema, ''), "text/html"
   end
 
   def release request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.release
     payment.save
-    PP.pp(payment.schema, '')
+    return PP.pp(payment.schema, ''), "text/html"
   end
 
   def cancel request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.cancel
     payment.save
-    PP.pp(payment.schema, '')
+    return PP.pp(payment.schema, ''), "text/html"
   end
 
   def escrow request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.escrow
     payment.save
-    PP.pp(payment.schema, '')
+    return PP.pp(payment.schema, ''), "text/html"
   end
 
 end
@@ -102,13 +104,13 @@ class User < SimpleController
 
   def call env
     request = Rack::Request.new(env)
-    return_value = case request.path.gsub(/\/$/, '')  # trim trailing /
-                     when '/user' then request.post? ? create(request) : nil
-                     else nil
-                   end
+    return_value, mime_type = case request.path.gsub(/\/$/, '')  # trim trailing /
+        when '/user' then request.post? ? create(request) : [nil, nil]
+        else [nil, nil]
+    end
 
     if return_value
-      response = Rack::Response.new([return_value], 201, {"Content-Type" => "text/html"})
+      response = Rack::Response.new([return_value], 201, {"Content-Type" => mime_type})
       response.finish
     else
       return_404
@@ -121,7 +123,7 @@ class User < SimpleController
          :last_name => request.POST['user_last_name'],
          :email_address => request.POST['user_email_address']
     })
-    PP.pp(user.schema, '')
+    return PP.pp(user.schema, ''), "text/html"
   end
 
 end
@@ -131,15 +133,15 @@ class ChargePermission < SimpleController
 
   def call env
     request = Rack::Request.new(env)
-    return_value = case request.path.gsub(/\/$/, '')  # trim trailing /
-                     when '/charge_permission' then request.post? ? create(request) : nil
-                     when '/charge_permission/find' then request.post? ? show(request) : nil
-                     when '/charge_permission/deactivate' then request.post? ? deactivate(request) : nil
-                     else nil
-                   end
+    return_value, mime_type = case request.path.gsub(/\/$/, '')  # trim trailing /
+        when '/charge_permission' then request.post? ? create(request) : [nil, nil]
+        when '/charge_permission/find' then request.post? ? show(request) : [nil, nil]
+        when '/charge_permission/deactivate' then request.post? ? deactivate(request) : [nil, nil]
+        else [nil, nil]
+    end
 
     if return_value
-      response = Rack::Response.new([return_value], 201, {"Content-Type" => "text/html"})
+      response = Rack::Response.new([return_value], 201, {"Content-Type" => mime_type})
       response.finish
     else
       return_404
@@ -148,22 +150,23 @@ class ChargePermission < SimpleController
 
   def create request
     charge_permission = Poundpay::ChargePermission.create(request.POST)
-    PP.pp(charge_permission.schema, '')
+    charge_permission.include_root_in_json = false
+    return charge_permission.to_json(), "application/json"
   end
 
   def show request
     charge_permissions = Poundpay::ChargePermission.all(:email_address => request.POST['email_address'])
     if charge_permissions
-      PP.pp(charge_permissions.map {|cp| cp.schema}, '')
+      return PP.pp(charge_permissions.map {|cp| cp.schema}, ''), 'text/plain'
     else
-      nil
+      return [nil, nil]
     end
   end
 
   def deactivate request
     charge_permission = Poundpay::ChargePermission.find(request.POST['sid'])
     charge_permission.deactivate
-    PP.pp(charge_permission.schema, '')
+    return PP.pp(charge_permission.schema, ''), 'text/plain'
   end
 
 end

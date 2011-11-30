@@ -1,0 +1,3 @@
+[submodule "examples/marketplace/fe"]
+	path = examples/marketplace/fe
+	url = git@github.com:PoundPay/simplemp.git
