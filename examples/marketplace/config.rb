@@ -4,8 +4,8 @@ class SimpleApplication
       "api_url" => "https://api-sandbox.poundpay.com",
       "www_url" => "https://www-sandbox.poundpay.com",
       "version" => "silver",
-      "developer_sid" => "DV2f8a5168710c11e0aab3123140005921",
-      "auth_token" => "f309a5f600a630f7293c64783eaebc8b67a34428cfcd96e82599657a12769924",
+      "developer_sid" => "DVxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+      "auth_token" => "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
       "callback_url" => '',
     },
     default_payment: {
