@@ -180,30 +180,28 @@ the collection you want to batch to the IFrame
 Alternatively if you are directly authorizing the payments using a charge
 permission
 
-    Poundpay::Payments.batch_update(
+    Poundpay::Payment.batch_update(
         :sid => [payment1.sid, payment2.sid, payment3.sid],
         :status => 'AUTHORIZED')
 
 Finally you'll need to batch escrow the payments
 
-    Poundpay::Payments.batch_update(
+    Poundpay::Payment.batch_update(
         :sid => [payment1.sid, payment2.sid, payment3.sid],
         :status => 'ESCROWED')
 
 Notice that if you did the following instead an error would be triggered since
 batched payments *must* be authorized and escrowed collectively
 
-    payment = Poundpay::Payments.find(payment1_sid)  
-    payment.escrow
-    payment.save # fails
+    payment = Poundpay::Payment.find(payment1_sid)  
+    payment.escrow  # fails
 
 However if you cancel some of the payments prior to batch escrow you should
 exclude them from the batch call
 
-    payment1 = Poundpay::Payments.find(payment1_sid)  
-    payment1.escrow
-    payment1.save # ok
+    payment1 = Poundpay::Payment.find(payment1_sid)  
+    payment1.cancel  # ok
 
-    Poundpay::Payments.batch_update(
+    Poundpay::Payment.batch_update(
         :sid => [payment2.sid, payment3.sid],
         :status => 'ESCROWED')
