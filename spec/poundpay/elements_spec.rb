@@ -68,24 +68,24 @@ describe Payment do
   end
 
   describe "#authorize" do
-    it "should not be able to authorize a non STAGED payment" do
-      @non_staged_payment = Payment.new authorized_payment_attributes
-      expect {@non_staged_payment.authorize}.to raise_error(PaymentAuthorizeException)
+    it "should not be able to authorize a non CREATED payment" do
+      @non_created_payment = Payment.new authorized_payment_attributes
+      expect {@non_created_payment.authorize}.to raise_error(PaymentAuthorizeException)
     end
 
-    it "should authorize a STAGED payment" do
-      @staged_payment = Payment.new staged_payment_attributes
-      @staged_payment.should_receive(:save).and_return(Payment.new authorized_payment_attributes)
+    it "should authorize a CREATED payment" do
+      @created_payment = Payment.new created_payment_attributes
+      @created_payment.should_receive(:save).and_return(Payment.new authorized_payment_attributes)
 
-      @staged_payment.authorize
-      @staged_payment.status.should == 'AUTHORIZED'
+      @created_payment.authorize
+      @created_payment.state.should == 'AUTHORIZED'
     end
   end
 
   describe "#escrow" do
-    it "should not be able to escrow a STAGED payment" do
-      @staged_payment = Payment.new staged_payment_attributes
-      expect {@staged_payment.escrow}.to raise_error(PaymentEscrowException)
+    it "should not be able to escrow a CREATED payment" do
+      @created_payment = Payment.new created_payment_attributes
+      expect {@created_payment.escrow}.to raise_error(PaymentEscrowException)
     end
 
     it "should escrow an AUTHORIZED payment" do
@@ -93,14 +93,14 @@ describe Payment do
       @authorized_payment.should_receive(:save).and_return(Payment.new escrowed_payment_attributes)
 
       @authorized_payment.escrow
-      @authorized_payment.status.should == 'ESCROWED'
+      @authorized_payment.state.should == 'ESCROWED'
     end
   end
 
   describe "#release" do
-    it "should not be able to release a STAGED payment" do
-      @staged_payment = Payment.new staged_payment_attributes
-      expect {@staged_payment.release}.to raise_error(PaymentReleaseException)
+    it "should not be able to release a CREATED payment" do
+      @created_payment = Payment.new created_payment_attributes
+      expect {@created_payment.release}.to raise_error(PaymentReleaseException)
     end
 
     it "should release an ESCROWED payment" do
@@ -108,14 +108,14 @@ describe Payment do
       @escrowed_payment.should_receive(:save).and_return(Payment.new released_payment_attributes)
 
       @escrowed_payment.release
-      @escrowed_payment.status.should == 'RELEASED'
+      @escrowed_payment.state.should == 'RELEASED'
     end
   end  
 
   describe "#cancel" do
-    it "should not be able to cancel a STAGED payment" do
-      @staged_payment = Payment.new staged_payment_attributes
-      expect {@staged_payment.cancel}.to raise_error(PaymentCancelException)
+    it "should not be able to cancel a RELEASED payment" do
+      @released_payment = Payment.new released_payment_attributes
+      expect {@released_payment.cancel}.to raise_error(PaymentCancelException)
     end
 
     it "should cancel an ESCROWED payment" do
@@ -123,7 +123,15 @@ describe Payment do
       @escrowed_payment.should_receive(:save).and_return(Payment.new canceled_payment_attributes)
 
       @escrowed_payment.cancel
-      @escrowed_payment.status.should == 'CANCELED'
+      @escrowed_payment.state.should == 'CANCELED'
+    end
+
+    it "should cancel a CREATED payment" do
+      @created_payment = Payment.new created_payment_attributes
+      @created_payment.should_receive(:save).and_return(Payment.new canceled_payment_attributes)
+
+      @created_payment.cancel
+      @created_payment.state.should == 'CANCELED'
     end
   end
 end
