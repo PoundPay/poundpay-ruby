@@ -71,7 +71,7 @@ class Payment < SimpleController
 
   def authorize request
     if request.POST['sid'].kind_of?(Array)
-        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :status => 'authorized')
+        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :state => 'authorized')
         payments = payments.collect! {|p| p.schema }
         return PP.pp(payments, ''), "text/html"
     else
@@ -85,26 +85,23 @@ class Payment < SimpleController
   def release request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.release
-    payment.save
     return PP.pp(payment.schema, ''), "text/html"
   end
 
   def cancel request
     payment = Poundpay::Payment.find(request.POST['sid'])
     payment.cancel
-    payment.save
     return PP.pp(payment.schema, ''), "text/html"
   end
 
   def escrow request
     if request.POST['sid'].kind_of?(Array)
-        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :status => 'escrowed')
+        payments = Poundpay::Payment.batch_update(:sid => request.POST['sid'], :state => 'escrowed')
         payments = payments.collect! {|p| p.schema }
         return PP.pp(payments, ''), "text/html"
     else
         payment = Poundpay::Payment.find(request.POST['sid'])
         payment.escrow
-        payment.save
         return PP.pp(payment.schema, ''), "text/html"
     end
   end

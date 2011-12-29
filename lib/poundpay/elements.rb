@@ -78,40 +78,40 @@ module Poundpay
     end
 
     def authorize
-      unless status == 'STAGED'
-        raise PaymentAuthorizeException.new "Payment status is #{status}.  Only STAGED payments may be AUTHORIZED."
+      unless state == 'CREATED'
+        raise PaymentAuthorizeException.new "Payment state is #{state}.  Only CREATED payments may be AUTHORIZED."
       end
-      attributes['status'] = 'AUTHORIZED'
+      attributes['state'] = 'AUTHORIZED'
       save
     end
 
     def escrow
-      unless status == 'AUTHORIZED'
-        raise PaymentEscrowException.new "Payment status is #{status}.  Only AUTHORIZED payments may be ESCROWED."
+      unless state == 'AUTHORIZED'
+        raise PaymentEscrowException.new "Payment state is #{state}.  Only AUTHORIZED payments may be ESCROWED."
       end
-      attributes['status'] = 'ESCROWED'
+      attributes['state'] = 'ESCROWED'
       save
     end
 
     def release
-      statuses = ['ESCROWED']
-      unless statuses.include?(status)
-        raise PaymentReleaseException.new "Payment status is #{status}.  Only ESCROWED payments may be RELEASED."
+      states = ['ESCROWED']
+      unless states.include?(state)
+        raise PaymentReleaseException.new "Payment state is #{state}.  Only ESCROWED payments may be RELEASED."
       end
-      # Tried setting status with status=, but save still had status == 'ESCROWED'.
-      # Setting the status through the attributes, however, does work.
-      attributes['status'] = 'RELEASED'
+      # Tried setting state with state=, but save still had state == 'ESCROWED'.
+      # Setting the state through the attributes, however, does work.
+      attributes['state'] = 'RELEASED'
       save
     end
 
     def cancel
-      statuses = ['AUTHORIZED', 'ESCROWED']
-      unless statuses.include?(status)
-        raise PaymentCancelException.new "Payment status is #{status}.  Only payments with statuses " \
-        "#{statuses.join(', ')} may be canceled"
+      states = ['CREATED', 'AUTHORIZED', 'ESCROWED']
+      unless states.include?(state)
+        raise PaymentCancelException.new "Payment state is #{state}.  Only payments with states " \
+        "#{states.join(', ')} may be canceled"
       end
 
-      attributes['status'] = 'CANCELED'
+      attributes['state'] = 'CANCELED'
       save
     end
   end
