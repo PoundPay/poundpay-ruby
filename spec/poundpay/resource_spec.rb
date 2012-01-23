@@ -29,6 +29,12 @@ describe Resource do
       FakeElement.collection_path.should == "/version/fake_elements"
     end
   end
+  
+  describe "#self.custom_method_collection_url" do
+    it "should not add a extension to the custom_method_collection_url" do
+      FakeElement.custom_method_collection_url("").should == "/version/fake_elements/"
+    end
+  end
 
   describe "#self.instantiate_collection" do
     it "should handle paginated responses" do
@@ -42,6 +48,10 @@ describe Resource do
     it "should urlencode the attributes" do
       fake_element = FakeElement.new(:foo => "bar baz")
       fake_element.encode.should == "foo=bar+baz"
+    end
+    it "should urlencode the attributes wuihtout brackets" do
+      fake_element = FakeElement.new(:foo => ["bar", "baz"])
+      fake_element.encode.should == "foo=bar&foo=baz"
     end
   end
 

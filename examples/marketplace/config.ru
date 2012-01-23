@@ -6,7 +6,7 @@ require 'rack/urlmap'
 
 use Rack::ShowExceptions
 use Rack::Lint
-use Rack::Static, :urls => ["/static"]
+use Rack::Static, :urls => ["/static"], :root => "fe"
 
 require './application'
 

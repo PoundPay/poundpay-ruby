@@ -89,6 +89,7 @@ Poundpay is a payments platform for marketplaces
   payment.escrow                    # AUTHORIZED -> ESCROWED.  Credit card is charged
   payment.release                   # ESCROWED or PARTIALLY_RELEASED -> RELEASED.  Recipient receives money
   payment.cancel                    # ESCROWED or PARTIALLY_RELEASED -> CANCELED.  Payer receives refund
+  Poundpay::Payment.batch_update    # Batch update a list of payments.
 
 
 == Creating a charge permission
@@ -130,3 +131,77 @@ Poundpay is a payments platform for marketplaces
 
   charge_permission = Poundpay::ChargePermission.find(charge_permission_sid)
   charge_permission.deactivate      # CREATED or ACTIVE -> INACTIVE. Charge permission is deactivated and can no longer be used to authorize payments for the associated payer.
+
+
+== Batching
+
+In some cases you may wish to batch authorize and escrow a collection of
+payments. By doing so there will be only *one* payer charge for that collection
+of payments. Note that if you do batch authorize a collection of payments that
+it must *also* be batch escrowed.
+
+Batching is designed for shopping carts where you want a collection of payments
+to appear to appear as a single charge.
+
+In order to use batching you simply need to pass `sids` for *all* payments in
+the collection you want to batch to the IFrame
+
+  <script src="https://www.poundpay.com/js/poundpay.js"></script>
+
+    <div id="pound-root"></div>
+
+    <script>
+      function handlePaymentSuccess() {
+        // do something
+      }
+
+      function handlePaymentError() {
+        // handle error
+      }
+
+      PoundPay.init({
+        payment_sid: [
+            "<%= @payment1.sid %>"
+            "<%= @payment2.sid %>",
+            "<%= @payment3.sid %>"
+            ],
+        success: handlePaymentSuccess,
+        error: handlePaymentError,
+        first_name: "Fred", // Optional
+        last_name: "Nietzsche", // Optional
+        address_street: "990 Guerrero St", // Optional
+        address_city: "San Francisco", // Optional
+        address_state: "California", // Optional
+        address_zip: "94110", // Optional
+        server: "https://www-sandbox.poundpay.com"  // Exclude for production
+      });
+    </script>
+
+Alternatively if you are directly authorizing the payments using a charge
+permission
+
+    Poundpay::Payment.batch_update(
+        :sid => [payment1.sid, payment2.sid, payment3.sid],
+        :status => 'AUTHORIZED')
+
+Finally you'll need to batch escrow the payments
+
+    Poundpay::Payment.batch_update(
+        :sid => [payment1.sid, payment2.sid, payment3.sid],
+        :status => 'ESCROWED')
+
+Notice that if you did the following instead an error would be triggered since
+batched payments *must* be authorized and escrowed collectively
+
+    payment = Poundpay::Payment.find(payment1_sid)  
+    payment.escrow  # fails
+
+However if you cancel some of the payments prior to batch escrow you should
+exclude them from the batch call
+
+    payment1 = Poundpay::Payment.find(payment1_sid)  
+    payment1.cancel  # ok
+
+    Poundpay::Payment.batch_update(
+        :sid => [payment2.sid, payment3.sid],
+        :status => 'ESCROWED')

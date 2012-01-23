@@ -1,6 +1,6 @@
 module Poundpay
   module PaymentFixture
-    def staged_payment_attributes
+    def created_payment_attributes
       {
         "amount"                     => 20000,
         "payer_fee_amount"           => 0,
@@ -9,7 +9,7 @@ module Poundpay
         "recipient_email_address"    => "david@example.com",
         "description"                => "Beats by Dr. Dre",
         "sid"                        => "PY1d82752a361211e0bce31231400042c7",
-        "status"                     => "STAGED",
+        "state"                      => "CREATED",
         "amount_to_credit_developer" => 550,
         "updated_at"                 => "2011-02-11T19:07:05.332356Z",
         "recipient_sid"              => nil,
@@ -23,26 +23,26 @@ module Poundpay
     end
 
     def authorized_payment_attributes
-      @attributes = staged_payment_attributes
-      @attributes["status"] = "AUTHORIZED"
+      @attributes = created_payment_attributes
+      @attributes["state"] = "AUTHORIZED"
       @attributes
     end
 
     def escrowed_payment_attributes
-      @attributes = staged_payment_attributes
-      @attributes["status"] = "ESCROWED"
+      @attributes = created_payment_attributes
+      @attributes["state"] = "ESCROWED"
       @attributes
     end
 
     def released_payment_attributes
-      @attributes = staged_payment_attributes
-      @attributes["status"] = "RELEASED"
+      @attributes = created_payment_attributes
+      @attributes["state"] = "RELEASED"
       @attributes
     end
 
     def canceled_payment_attributes
-      @attributes = staged_payment_attributes
-      @attributes["status"] = "CANCELED"
+      @attributes = created_payment_attributes
+      @attributes["state"] = "CANCELED"
       @attributes
     end
   end
