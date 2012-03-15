@@ -17,15 +17,22 @@ describe Poundpay do
     Poundpay.should_not be_configured
   end
 
-  after (:each) do
+  after do
     Poundpay.clear_config!
   end
 
   it "should automatically load config if exists" do
-    Poundpay.configure_from_yaml "config/poundpay.yml"
+    Poundpay.configure_from_yaml "poundpay.yml"
 
     Poundpay.should be_configured
     Poundpay::Resource.password.should == "development_auth_token"
+  end
+
+  it "configures using ERB files to allow ENV variables" do
+    Poundpay.configure_from_yaml "poundpay.yml.erb"
+
+    Poundpay.should be_configured
+    Poundpay::Resource.password.should == "erb_development_auth_token"
   end
 
   it "should raise argument error and configure nothing if config does not exist" do
@@ -34,6 +41,6 @@ describe Poundpay do
     }.to raise_error(ArgumentError, /wrong_path/)
 
     Poundpay.should_not be_configured
-    Poundpay::Resource.password.should == nil
+    Poundpay::Resource.password.should_not be
   end
 end
