@@ -7,7 +7,7 @@ module Poundpay
     self.format = Formats::UrlencodedJsonFormat
 
     class << self
-      attr_accessor :primary_key
+      attr_writer :primary_key
 
       def primary_key
         @primary_key ||= 'sid'
@@ -45,9 +45,9 @@ module Poundpay
       end
 
       protected
-        def remove_extension(path)
-          path.sub /(\.#{format.extension})/, ""
-        end
+      def remove_extension(path)
+        path.sub /(\.#{format.extension})/, ""
+      end
     end
 
     # Poundpay accepts urlencoded form parameters
@@ -61,14 +61,14 @@ module Poundpay
     end
 
     protected
-        def self.urlencode(params)
-          params.to_a.collect! { |k, v|
-              if v.kind_of?(Array)
-                v.collect! { |x| "#{k}=#{CGI.escape(x.to_s)}"}.join("&")
-              else
-                "#{k}=#{CGI.escape(v.to_s)}"
-              end 
-          }.join("&")
+    def self.urlencode(params)
+      params.to_a.collect! { |k, v|
+        if v.kind_of?(Array)
+          v.collect! { |x| "#{k}=#{CGI.escape(x.to_s)}" }.join("&")
+        else
+          "#{k}=#{CGI.escape(v.to_s)}"
         end
+      }.join("&")
+    end
   end
 end
