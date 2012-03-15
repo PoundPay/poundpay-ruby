@@ -2,6 +2,19 @@ require 'poundpay'
 
 describe Poundpay do
   module Rails
+    def self.root
+      Pathname(File.expand_path("../../fixtures", __FILE__))
+    end
+
+    def self.env
+      "development"
+    end
+  end
+
+  load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
+
+  before do
+    Poundpay.should_not be_configured
   end
 
   after (:each) do
@@ -9,41 +22,18 @@ describe Poundpay do
   end
 
   it "should automatically load config if exists" do
-    load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
-
-    module Rails
-      def self.root
-        Pathname(File.expand_path("../../fixtures", __FILE__))
-      end
-
-      def self.env
-        "development"
-      end
-    end
-
-    Poundpay.configured?.should be_false
     Poundpay.configure_from_yaml "config/poundpay.yml"
-    Poundpay.configured?.should be_true
+
+    Poundpay.should be_configured
     Poundpay::Resource.password.should == "development_auth_token"
   end
 
-  it "should not do anything if config does not exist" do
-    load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
+  it "should raise argument error and configure nothing if config does not exist" do
+    expect {
+      Poundpay.configure_from_yaml "wrong_path"
+    }.to raise_error(ArgumentError, /wrong_path/)
 
-    module Rails
-      def self.root
-        Pathname(File.expand_path("../../fixtures", __FILE__))
-      end
-
-      def self.env
-        "development"
-      end
-    end
-
-    Poundpay.configured?.should be_false
-    expect { Poundpay.configure_from_yaml "wrong_path" }.to raise_error(ArgumentError, /wrong_path/)
-    Poundpay.configured?.should be_false
+    Poundpay.should_not be_configured
     Poundpay::Resource.password.should == nil
   end
-
 end
