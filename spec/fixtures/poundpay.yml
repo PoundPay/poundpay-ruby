@@ -16,5 +16,5 @@ future:
   api_version: gold
 
 invalid:
-  developer_sid: 
-  auth_token: 
+  developer_sid:
+  auth_token:

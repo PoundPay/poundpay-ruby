@@ -2,48 +2,45 @@ require 'poundpay'
 
 describe Poundpay do
   module Rails
+    def self.root
+      Pathname(File.expand_path("../../fixtures", __FILE__))
+    end
+
+    def self.env
+      "development"
+    end
   end
 
-  after (:each) do
+  load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
+
+  before do
+    Poundpay.should_not be_configured
+  end
+
+  after do
     Poundpay.clear_config!
   end
 
   it "should automatically load config if exists" do
-    load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
+    Poundpay.configure_from_yaml "poundpay.yml"
 
-    module Rails
-      def self.root
-        Pathname(File.expand_path("../../fixtures", __FILE__))
-      end
-
-      def self.env
-        "development"
-      end
-    end
-
-    Poundpay.configured?.should be_false
-    Poundpay.configure_from_yaml "config/poundpay.yml"
-    Poundpay.configured?.should be_true
+    Poundpay.should be_configured
     Poundpay::Resource.password.should == "development_auth_token"
   end
 
-  it "should not do anything if config does not exist" do
-    load File.expand_path("../../../lib/poundpay/rails.rb", __FILE__)
+  it "configures using ERB files to allow ENV variables" do
+    Poundpay.configure_from_yaml "poundpay.yml.erb"
 
-    module Rails
-      def self.root
-        Pathname(File.expand_path("../../fixtures", __FILE__))
-      end
-
-      def self.env
-        "development"
-      end
-    end
-
-    Poundpay.configured?.should be_false
-    expect { Poundpay.configure_from_yaml "wrong_path" }.to raise_error(ArgumentError, /wrong_path/)
-    Poundpay.configured?.should be_false
-    Poundpay::Resource.password.should == nil
+    Poundpay.should be_configured
+    Poundpay::Resource.password.should == "erb_development_auth_token"
   end
 
+  it "should raise argument error and configure nothing if config does not exist" do
+    expect {
+      Poundpay.configure_from_yaml "wrong_path"
+    }.to raise_error(ArgumentError, /wrong_path/)
+
+    Poundpay.should_not be_configured
+    Poundpay::Resource.password.should_not be
+  end
 end
